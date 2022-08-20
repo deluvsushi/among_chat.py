@@ -47,7 +47,7 @@ class AmongChat:
 		}
 		response = requests.post(
 			f"{self.api}/auth/login",
-			data=data,
+			json=data,
 			headers=self.headers).json()
 		if "access_token" in response["data"]:
 			self.user_id = response["data"]["uid"]
@@ -56,7 +56,7 @@ class AmongChat:
 			self.headers["x-access-token"] = self.access_token
 			self.headers["x-among-ua"] += "uid={self.user_id};"
 		return response
-
+			
 	def login_with_google(
 			self,
 			google_id_token: str,
@@ -70,7 +70,7 @@ class AmongChat:
 		}
 		return requests.post(
 			f"{self.api}/auth/login",
-			data=data,
+			json=data,
 			headers=self.headers).json()
 
 	def edit_profile(
@@ -92,7 +92,7 @@ class AmongChat:
 			data["profile_data"]["hide_location"] = hide_location
 		return requests.post(
 			f"{self.api}/account/profile",
-			data=data,
+			json=data,
 			headers=self.headers).json()
 
 	def get_account_profile(self):
@@ -189,7 +189,7 @@ class AmongChat:
 		}
 		return requests.post(
 			f"{self.api}/account/pet/work",
-			data=data,
+			json=data,
 			headers=self.headers).json()
 
 	def get_user_status(self, user_id: int):
@@ -248,7 +248,7 @@ class AmongChat:
 		data = {"gid": group_id}
 		return requests.post(
 			f"{self.api}/api/v1/group/apply",
-			data=data,
+			json=data,
 			headers=self.headers).json()
 
 	def get_group_info(self, group_id: str):
@@ -278,7 +278,7 @@ class AmongChat:
 		}
 		return requests.post(
 			f"{self.api}/api/v1/group/live/user/list",
-			data=data,
+			json=data,
 			headers=self.headers).json()
 
 	def get_group_users(
@@ -306,7 +306,7 @@ class AmongChat:
 		}
 		return requests.post(
 			f"{self.api}/api/v1/rooms/invite",
-			data=data,
+			json=data,
 			headers=self.headers).json()
 
 	def get_user_followers(
@@ -331,7 +331,7 @@ class AmongChat:
 		data = {"upid": pet_id}
 		return requests.post(
 			f"{self.api}/account/pet/level/up",
-			data=data,
+			json=data,
 			headers=self.headers).json()
 
 	def get_diamond_products(self):

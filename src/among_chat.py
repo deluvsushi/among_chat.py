@@ -12,7 +12,7 @@ class AmongChat:
 			model: str = "SM-G9880",
 			brand: str = "samsung",
 			country_code: str = "RU",
-			push_type: str = "FCM"):
+			push_type: str = "FCM") -> None:
 		self.api = "https://api.among.chat"
 		self.headers = {
 			"user-agent": "okhttp/4.4.0",
@@ -29,17 +29,17 @@ class AmongChat:
 		self.android_id = self.generate_android_id()
 		self.headers["x-among-ua"] = f"appVersion={self.app_version};appIdentifier={self.app_identifier};deviceType={self.device_type};deviceId={self.device_id};lang={self.language};androidId={self.android_id};countryCode={self.country_code};pushType={self.push_type};"
 
-	def generate_device_id(self):
+	def generate_device_id(self) -> str:
 		return md5(urandom(15)).hexdigest()
 
-	def generate_android_id(self):
+	def generate_android_id(self) -> str:
 		return md5(urandom(10)).hexdigest()[:16]
 
 	def login(
 			self,
 			provider: str = "device",
 			client_type: str = "android",
-			box_token: int = 1):
+			box_token: int = 1) -> dict:
 		data = {
 			"provider": provider,
 			"client_type": client_type,
@@ -61,7 +61,7 @@ class AmongChat:
 			self,
 			google_id_token: str,
 			client_type: str = "android",
-			box_token: int = 1):
+			box_token: int = 1) -> dict:
 		data = {
 			"token": google_id_token,
 			"provider": "google",
@@ -78,7 +78,7 @@ class AmongChat:
 			nickname: str = None,
 			description: str = None,
 			hide_location: bool = True,
-			birthday: str = "19880101"):
+			birthday: str = "19880101") -> dict:
 		data = {
 			"profile_data": {
 				"birthday": birthday
@@ -95,42 +95,42 @@ class AmongChat:
 			json=data,
 			headers=self.headers).json()
 
-	def get_account_profile(self):
+	def get_account_profile(self) -> dict:
 		return requests.get(
 			f"{self.api}/account/profile",
 			headers=self.headers).json()
 
-	def get_setting(self):
+	def get_setting(self) -> dict:
 		return requests.get(
 			f"{self.api}/api/v1/setting",
 			headers=self.headers).json()
 
-	def get_banned_keywords(self):
+	def get_banned_keywords(self) -> dict:
 		return requests.get(
 			f"{self.api}/live/keyword/blacklist",
 			headers=self.headers).json()
 
-	def get_finance_info(self):
+	def get_finance_info(self) -> dict:
 		return requests.get(
 			f"{self.api}/finance/info",
 			headers=self.headers).json()
 
-	def get_summary(self):
+	def get_summary(self) -> dict:
 		return requests.get(
 			f"{self.api}/api/v1/summary",
 			headers=self.headers).json()
 
-	def get_rooms_list(self):
+	def get_rooms_list(self) -> dict:
 		return requests.get(
 			f"{self.api}/api/v1/trend/list",
 			headers=self.headers).json()
 
-	def get_account_pets(self):
+	def get_account_pets(self) -> dict:
 		return requests.get(
 			f"{self.api}/account/my/pet/list",
 			headers=self.headers).json()
 
-	def get_topics(self):
+	def get_topics(self) -> dict:
 		return requests.get(
 			f"{self.api}/api/v1/topics/v2",
 			headers=self.headers).json()
@@ -138,22 +138,22 @@ class AmongChat:
 	def get_group_list(
 			self,
 			skip: int = 0,
-			limit: int = 20):
+			limit: int = 20) -> dict:
 		return requests.get(
 			f"{self.api}/api/v1/group/list?skip={skip}&limit={limit}",
 			headers=self.headers).json()
 
-	def get_agora_live_token(self):
+	def get_agora_live_token(self) -> dict:
 		return requests.get(
 			f"{self.api}/live/token/agora",
 			headers=self.headers).json()
 
-	def get_room_info(self, room_id: str):
+	def get_room_info(self, room_id: str) -> dict:
 		return requests.get(
 			f"{self.api}/api/v1/rooms/room?room_id={room_id}",
 			headers=self.headers).json()
 
-	def get_room_live_token(self, room_id: str):
+	def get_room_live_token(self, room_id: str) -> dict:
 		return requests.get(
 			f"{self.api}/live/room/token?room_id={room_id}",
 			headers=self.headers).json()
@@ -164,25 +164,31 @@ class AmongChat:
 			code: str = None,
 			source: str = "join_friend_room",
 			rtc_support: str = "agora,zego",
-			with_full_recommend: int = 1):
+			with_full_recommend: int = 1) -> dict:
 		url = f"{self.api}/api/v1/rooms/enter?room_id={room_id}&source={source}&rtc_support={rtc_support}&with_full_recommend={with_full_recommend}"
 		if code:
 			url += f"&code={code}"
 		return requests.get(url, headers=self.headers).json()
 
-	def leave_room(self, room_id: str):
+	def leave_room(self, room_id: str) -> dict:
 		return requests.get(
 			f"{self.api}/api/v1/rooms/leave?room_id={room_id}",
 			headers=self.headers).json()
 
-	def get_pet_info(self, pet_id: int):
+	def get_pet_info(self, pet_id: int) -> dict:
 		return requests.get(
 			f"{self.api}/account/pet/info?upid={pet_id}",
 			headers=self.headers).json()
 
-	# work - 0 = end working
-	# work - 1 = start working
-	def pet_work(self, pet_id: int, work: int = 1):
+	def pet_work(
+			self,
+			pet_id: int,
+			work: int = 1) -> dict:
+		"""
+		WORK:
+			0 - END WORKING,
+			1 - START WORKING
+		"""
 		data = {
 			"work": work,
 			"upid": pet_id
@@ -192,32 +198,32 @@ class AmongChat:
 			json=data,
 			headers=self.headers).json()
 
-	def get_user_status(self, user_id: int):
+	def get_user_status(self, user_id: int) -> dict:
 		return requests.get(
 			f"{self.api}/api/v1/user/status?uid={user_id}",
 			headers=self.headers).json()
 
-	def get_report_reasons(self):
+	def get_report_reasons(self) -> dict:
 		return requests.get(
 			f"{self.api}/live/report/reason",
 			headers=self.headers).json()
 
-	def block_user(self, user_id: int):
+	def block_user(self, user_id: int) -> dict:
 		return requests.put(
 			f"{self.api}/social/relation?target_uid={user_id}&relation_type=block",
 			headers=self.headers).json()
 
-	def unblock_user(self, user_id: int):
+	def unblock_user(self, user_id: int) -> dict:
 		return requests.delete(
 			f"{self.api}/social/relation?target_uid={user_id}&relation_type=block",
 			headers=self.headers).json()
 
-	def follow_user(self, user_id: int):
+	def follow_user(self, user_id: int) -> dict:
 		return requests.put(
 			f"{self.api}/social/relation?target_uid={user_id}&relation_type=follow",
 			headers=self.headers).json()
 
-	def unfollow_user(self, user_id: int):
+	def unfollow_user(self, user_id: int) -> dict:
 		return requests.delete(
 			f"{self.api}/social/relation?target_uid={user_id}&relation_type=follow",
 			headers=self.headers).json()
@@ -226,12 +232,12 @@ class AmongChat:
 			self,
 			user_id: int,
 			with_tabs: int = 1,
-			show_unique: int = 1):
+			show_unique: int = 1) -> dict:
 		return requests.get(
 			f"{self.api}/account/profile/page?uid={user_id}&with_tabs={with_tabs}&show_unique={show_unique}",
 			headers=self.headers).json()
 
-	def get_user_relation(self, user_id: int):
+	def get_user_relation(self, user_id: int) -> dict:
 		return requests.get(
 			f"{self.api}/account/profile/relation?uid={user_id}",
 			headers=self.headers).json()
@@ -239,29 +245,29 @@ class AmongChat:
 	def get_account_groups(
 			self,
 			skip: int = 0,
-			limit: int = 20):
+			limit: int = 20) -> dict:
 		return requests.get(
 			f"{self.api}/api/v1/my/group/list?skip={skip}&limit={limit}",
 			headers=self.headers).json()
 
-	def apply_group(self, group_id: str):
+	def apply_group(self, group_id: str) -> dict:
 		data = {"gid": group_id}
 		return requests.post(
 			f"{self.api}/api/v1/group/apply",
 			json=data,
 			headers=self.headers).json()
 
-	def get_group_info(self, group_id: str):
+	def get_group_info(self, group_id: str) -> dict:
 		return requests.get(
 			f"{self.api}/api/v1/group?gid={group_id}",
 			headers=self.headers).json()
 
-	def join_group(self, group_id: str):
+	def join_group(self, group_id: str) -> dict:
 		return requests.get(
 			f"{self.api}/api/v1/group/live/enter?gid={group_id}",
 			headers=self.headers).json()
 
-	def leave_group(self, group_id: str):
+	def leave_group(self, group_id: str) -> dict:
 		return requests.get(
 			f"{self.api}/api/v1/group/live/leave?gid={group_id}",
 			headers=self.headers).json()
@@ -270,7 +276,7 @@ class AmongChat:
 			self,
 			group_id: str,
 			exclude_user_ids: str = "",
-			limit: int = 20):
+			limit: int = 20) -> dict:
 		data = {
 			"exclude_uids": exclude_user_ids,
 			"gid": group_id,
@@ -284,12 +290,12 @@ class AmongChat:
 	def get_group_users(
 			self,
 			group_id: str,
-			limit: int = 20):
+			limit: int = 20) -> dict:
 		return requests.get(
 			f"{self.api}/api/v1/group/member/list?gid={group_id}&limit={limit}",
 			headers=self.headers).json()
 
-	def get_online_strangers(self):
+	def get_online_strangers(self) -> dict:
 		return requests.get(
 			f"{self.api}/api/v1/online/stranger/list",
 			headers=self.headers).json()
@@ -298,7 +304,7 @@ class AmongChat:
 			self,
 			room_id: str,
 			user_id: int,
-			is_stranger: int = 1):
+			is_stranger: int = 1) -> dict:
 		data = {
 			"is_stranger": is_stranger,
 			"uid": user_id,
@@ -313,7 +319,7 @@ class AmongChat:
 			self,
 			user_id: int,
 			limit: int = 20,
-			skip: int = 0):
+			skip: int = 0) -> dict:
 		return requests.get(
 			f"{self.api}/social/relation/followers?uid={user_id}&limit={limit}&skip_ms={skip}",
 			headers=self.headers).json()
@@ -322,34 +328,36 @@ class AmongChat:
 			self,
 			user_id: int,
 			limit: int = 20,
-			skip: int = 0):
+			skip: int = 0) -> dict:
 		return requests.get(
 			f"{self.api}/social/relation?uid={user_id}&relation_type=follow&limit={limit}&skip_ms={skip}",
 			headers=self.headers).json()
 
-	def level_up_pet(self, pet_id: int):
-		data = {"upid": pet_id}
+	def level_up_pet(self, pet_id: int) -> dict:
+		data = {
+			"upid": pet_id
+		}
 		return requests.post(
 			f"{self.api}/account/pet/level/up",
 			json=data,
 			headers=self.headers).json()
 
-	def get_diamond_products(self):
+	def get_diamond_products(self) -> dict:
 		return requests.get(
 			f"{self.api}/finance/diamond/products",
 			headers=self.headers).json()
 
-	def get_egg_products(self):
+	def get_egg_products(self) -> dict:
 		return requests.get(
 			f"{self.api}/finance/egg/products",
 			headers=self.headers).json()
 
-	def get_pet_atlas(self):
+	def get_pet_atlas(self) -> dict:
 		return requests.get(
 			f"{self.api}/account/pet/atlas",
 			headers=self.headers).json()
 
-	def buy_pet(self):
+	def buy_pet(self) -> dict:
 		return requests.post(
 			f"{self.api}/account/coin/pet/buy",
 			data={},
@@ -358,7 +366,7 @@ class AmongChat:
 	def get_blocked_users(
 			self,
 			limit: int = 20,
-			skip: int = 0):
+			skip: int = 0) -> dict:
 		return requests.get(
 			f"{self.api}/social/relation?uid={self.user_id}&relation_type=block&limit={limit}&skip_ms={skip}",
 			headers=self.headers).json()
